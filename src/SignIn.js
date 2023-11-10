@@ -7,10 +7,17 @@ function SignInPage() {
     const [orgName, setOrgName] = useState('');
     const [orgLocation, setOrgLocation] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleInputChange = (event) => {
         const { id, value } = event.target;
-        if (id === "orgName") {
+        if (id === "username") {
+            setUsername(value);
+        } else if (id === "password") {
+            setPassword(value);
+        } else if (id === "orgName") {
             setOrgName(value);
         } else if (id === "orgLocation") {
             setOrgLocation(value);
@@ -18,16 +25,31 @@ function SignInPage() {
         setErrorMessage(''); // Clear error message upon any input change
     }
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(showPassword => !showPassword);
+    };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault(); // Prevent the default form submit action
+        // Here you would typically send the `username` and `password` to your backend for authentication
+        console.log('Submitting', { username, password });
+        // Implement your logic to handle the authentication response
+    };
+
     const navigateToMainPage = () => {
-        if (!orgName && !orgLocation) {
-            setErrorMessage('Please fill in the organization name and choose a location.');
+        // Start with checking the new fields first
+        if (!username) {
+            setErrorMessage('Please enter your username.');
+        } else if (!password) {
+            setErrorMessage('Please enter your password.');
         } else if (!orgName) {
             setErrorMessage('Please fill in the organization name.');
         } else if (!orgLocation) {
             setErrorMessage('Please choose a location.');
         } else {
-            console.log('Data to be sent to DB:', { orgName, orgLocation });
-            navigate('/main'); // Use the navigate function from useNavigate hook
+            // If everything is filled out, proceed with sending data to the DB and navigating
+            console.log('Data to be sent to DB:', { username, password, orgName, orgLocation });
+            navigate('/main'); // Navigate to the main page
         }
     }
 
@@ -50,6 +72,18 @@ function SignInPage() {
             {errorMessage && <div className="error-message">{errorMessage}</div>}
 
             <div className="form-container">
+
+                <label htmlFor="username">Username*</label>
+                <input type="text" id="username" onChange={handleInputChange} />
+
+                <label htmlFor="password">Password*</label>
+                <div className="password-container">
+                    <input type={showPassword ? "text" : "password"} id="password" onChange={handleInputChange} />
+                    <button type="button" onClick={togglePasswordVisibility} className="show-password-button">
+                        {showPassword ? "Hide" : "Show"}
+                    </button>
+                </div>
+
                 <label htmlFor="orgName">Organization Name*</label>
                 <input type="text" id="orgName" onChange={handleInputChange} />
 
@@ -62,7 +96,7 @@ function SignInPage() {
                     <option value="Location 4">Europe</option>
                 </select>
 
-                <button onClick={navigateToMainPage}>Let's get started!</button>
+                <button onClick={navigateToMainPage}>Sign in</button>
                 <button onClick={closePage}>Cancel</button>
             </div>
         </div>
