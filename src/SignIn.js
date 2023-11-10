@@ -22,7 +22,7 @@ function SignInPage() {
         } else if (id === "orgLocation") {
             setOrgLocation(value);
         }
-        setErrorMessage(''); // Clear error message upon any input change
+        setErrorMessage(''); // Clear error message upon any input changeeee
     }
 
     const togglePasswordVisibility = () => {
